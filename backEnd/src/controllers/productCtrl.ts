@@ -29,6 +29,18 @@ const productCtrl = {
     }
   },
 
+  getProduct: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const product = await productRepository.findOneBy({ id });
+      if (!product) return res.json({ msg: "Product not found" });
+
+      res.json(product);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
   updateProduct: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
