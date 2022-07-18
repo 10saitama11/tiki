@@ -1,61 +1,32 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import { Length, Max, Min } from "class-validator";
-import { Category } from "./Category";
-import { Comment } from "./Comment";
+import { Column, Entity } from "typeorm";
+import { Length } from "class-validator";
+
+import { Model } from "./Model";
 
 @Entity("Product")
-export class Product extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
+export class Product extends Model {
   @Column()
   @Length(5, 20)
   name: string;
-
-  @Column("simple-array")
-  images: string[];
 
   @Column()
   price: number;
 
   @Column()
-  initialPrice: number;
-
-  @Column()
-  discount: string;
+  discount: number;
 
   @Column({ type: "int", default: 0 })
-  sold: number;
+  quantity_sold: number;
 
   @Column({ type: "int", default: 0 })
-  @Min(0)
-  @Max(5)
-  rating: number;
+  order_count: number;
 
   @Column()
-  description: string;
+  sku: string;
 
   @Column()
-  detail: string;
+  short_description: string;
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
-
-  @OneToMany(() => Comment, (comment) => comment.product)
-  comments: Comment[];
-
-  @CreateDateColumn()
-  public createdAt: Date;
-
-  @UpdateDateColumn()
-  public updatedAt: Date;
+  @Column({ type: "int", default: 0 })
+  discount_rate: number;
 }

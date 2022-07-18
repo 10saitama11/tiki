@@ -6,6 +6,7 @@ import "reflect-metadata";
 import dotenv from "dotenv";
 dotenv.config();
 import { AppDataSource } from "./data-source";
+import routes from "./routes";
 
 const app = express();
 app.use(morgan("dev"));
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: `${process.env.BASE_URL}`, credentials: true }));
 
 // ------------------ Routes ----------------
+app.use("/api", routes);
 
 AppDataSource.initialize()
   .then(async () => {
