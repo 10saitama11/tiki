@@ -1,15 +1,20 @@
 import { DataSource } from "typeorm";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+const port = process.env.DB_PORT as number | undefined;
+
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "postgres",
-  password: "4568527931",
-  database: "tikiDb",
+  host: process.env.DB_HOST || "localhost",
+  port,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
   synchronize: true,
   logging: true,
-  entities: [],
+  entities: [`${__dirname}/**/entity/*.{ts, js}`],
   subscribers: [],
   migrations: [],
 });

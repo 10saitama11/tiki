@@ -4,8 +4,9 @@ import cors from "cors";
 import "reflect-metadata";
 
 import dotenv from "dotenv";
-import { AppDataSource } from "./data-source";
 dotenv.config();
+import { AppDataSource } from "./data-source";
+import routes from "./routes";
 
 const app = express();
 app.use(morgan("dev"));
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: `${process.env.BASE_URL}`, credentials: true }));
 
 // ------------------ Routes ----------------
+app.use("/api", routes);
 
 AppDataSource.initialize()
   .then(async () => {
