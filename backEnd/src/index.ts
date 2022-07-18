@@ -4,8 +4,8 @@ import cors from "cors";
 import "reflect-metadata";
 
 import dotenv from "dotenv";
-import { AppDataSource } from "./data-source";
 dotenv.config();
+import { AppDataSource } from "./data-source";
 
 const app = express();
 app.use(morgan("dev"));
