@@ -1,0 +1,50 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  line-height: 1.15;
+  text-size-adjust: 100%;
+  background-color: rgb(245, 245, 250);
+  font-size: 14px;
+}
+
+img {
+  max-width: 100%;
+  border-style: none;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+a {
+  color: rgb(11, 116, 229);
+  text-decoration: none;
+}
+
+a {
+  background-color: transparent;
+}
+
+input {
+  display: inline-block;
+  text-align: start;
+  cursor: text;
+}
