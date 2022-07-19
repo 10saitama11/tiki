@@ -13,4 +13,18 @@ export const ProductRepository = AppDataSource.getRepository(Product).extend({
       .take(value.take)
       .getMany();
   },
+
+  async priceProductsFilter(value: any) {
+    console.log("Value 2: ", value);
+    return await this.createQueryBuilder("product")
+      .select("product")
+      .where(
+        `product.price BETWEEN ${Number(value.minPrice)} AND ${Number(
+          value.maxPrice
+        )}`
+      )
+      .skip(value.skip)
+      .take(value.take)
+      .getMany();
+  },
 });

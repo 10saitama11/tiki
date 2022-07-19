@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: `${process.env.BASE_URL}`, credentials: true }));
 
 // ------------------ Routes ----------------
-app.use("/api", routes);
+app.use("/api/v1/blocks", routes);
 
 AppDataSource.initialize()
   .then(async () => {

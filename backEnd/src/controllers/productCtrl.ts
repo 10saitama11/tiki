@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Like, Repository } from "typeorm";
+import { Like } from "typeorm";
 import { Product } from "../entity/Product";
 import {
   ProductRepository,
@@ -7,7 +7,7 @@ import {
 } from "../repositories/productRepository";
 
 const PageConfig = (req: Request) => {
-  const limit = Number(req.query.limit) * 1 || 9;
+  const limit = Number(req.query.limit) * 1 || 48;
   const page = Number(req.query.page) * 1 || 1;
   const skip = (page - 1) * limit;
 
@@ -15,6 +15,9 @@ const PageConfig = (req: Request) => {
 };
 
 const productCtrl = {
+  // route: /api/product - method: 'POST',
+  // description: 'Create a new product'
+  // return: a new Product
   createProduct: async (req: Request, res: Response) => {
     try {
       const { name, price, discount, sku, short_description, discount_rate } =
@@ -31,17 +34,39 @@ const productCtrl = {
     }
   },
 
+  // route: /api/products - method: 'GET',
+  // description: 'Get all products in Database, use Pagination, sort',
+  // return: all products in Database
   getProducts: async (req: Request, res: Response) => {
     const { skip, limit } = PageConfig(req);
-    const { sort, order_by } = req.query;
+    const { sort, order_by, price } = req.query;
+
+    let nameCol = sort;
+    if (sort === "top_seller") {
+      nameCol = "quantity_sold";
+    }
+
+    const priceArr = (price as string).split(",");
+    let products;
     try {
-      // Default sort newest date
-      const products = await ProductRepository.sortProducts({
-        name: sort || "createAt",
-        order_by: (order_by as string)?.toUpperCase() || "DESC",
-        skip,
-        take: limit,
-      });
+      if (price) {
+        products = await ProductRepository.priceProductsFilter({
+          name: "price",
+          minPrice: priceArr[0],
+          maxPrice: priceArr[1],
+          order_by: (order_by as string)?.toUpperCase() || "DESC",
+          skip,
+          take: limit,
+        });
+      } else {
+        // Default sort newest date
+        products = await ProductRepository.sortProducts({
+          name: nameCol || "createAt",
+          order_by: (order_by as string)?.toUpperCase() || "DESC",
+          skip,
+          take: limit,
+        });
+      }
 
       res.json(products);
     } catch (error: any) {
@@ -49,6 +74,9 @@ const productCtrl = {
     }
   },
 
+  // route: /api/product - method: 'GET',
+  // description: 'Get a product by its ID',
+  // return: all products in Database
   getProduct: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -61,6 +89,9 @@ const productCtrl = {
     }
   },
 
+  // route: /api/search_product - method: 'GET',
+  // description: 'Find maximum 10 products have name contain keyword search',
+  // return: all products with name contain keyword search
   searchProducts: async (req: Request, res: Response) => {
     const { name } = req.body;
     try {
@@ -81,20 +112,9 @@ const productCtrl = {
     }
   },
 
-  sortProducts: async (req: Request, res: Response) => {
-    const { skip, limit } = PageConfig(req);
-    try {
-      const products = await productRepository.find({
-        skip,
-        take: limit,
-      });
-
-      res.json(products);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  },
-
+  // route: /api/product/:id - method: 'PATCH',
+  // description: 'update a little property of a product',
+  // return: notify
   updateProduct: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -114,6 +134,9 @@ const productCtrl = {
     }
   },
 
+  // route: /api/product/:id - method: 'DELETE',
+  // description: 'delete a product in the database',
+  // return: notify
   deleteProduct: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;

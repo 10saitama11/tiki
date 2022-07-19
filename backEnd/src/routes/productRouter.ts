@@ -3,9 +3,9 @@ import productCtrl from "../controllers/productCtrl";
 
 const router = express.Router();
 
-router.get("/products", productCtrl.getProducts);
+router.get("/listings", productCtrl.getProducts);
 
-router.get("/product/:id", productCtrl.getProduct);
+router.get("/listing/:id", productCtrl.getProduct);
 
 router.get("/search_product", productCtrl.searchProducts);
 
