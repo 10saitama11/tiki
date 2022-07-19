@@ -65,7 +65,7 @@ export const StyledInfiniteScrollWidgetHeaderTabs = styled.div`
   }
 `;
 
-export const StyledImg = styled.div`
+export const StyledImg = styled.img`
   object-fit: contain;
 `;
 
