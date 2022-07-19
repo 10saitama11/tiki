@@ -7,6 +7,8 @@ router.get("/products", productCtrl.getProducts);
 
 router.get("/product/:id", productCtrl.getProduct);
 
+router.get("/search_product", productCtrl.searchProducts);
+
 router.post("/product", productCtrl.createProduct);
 
 router

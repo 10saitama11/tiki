@@ -1,6 +1,18 @@
 import { Request, Response } from "express";
+import { Like, Repository } from "typeorm";
 import { Product } from "../entity/Product";
-import { productRepository } from "../repositories/productRepository";
+import {
+  ProductRepository,
+  productRepository,
+} from "../repositories/productRepository";
+
+const PageConfig = (req: Request) => {
+  const limit = Number(req.query.limit) * 1 || 9;
+  const page = Number(req.query.page) * 1 || 1;
+  const skip = (page - 1) * limit;
+
+  return { page, limit, skip };
+};
 
 const productCtrl = {
   createProduct: async (req: Request, res: Response) => {
@@ -20,8 +32,16 @@ const productCtrl = {
   },
 
   getProducts: async (req: Request, res: Response) => {
+    const { skip, limit } = PageConfig(req);
+    const { sort, order_by } = req.query;
     try {
-      const products = await productRepository.find();
+      // Default sort newest date
+      const products = await ProductRepository.sortProducts({
+        name: sort || "createAt",
+        order_by: (order_by as string)?.toUpperCase() || "DESC",
+        skip,
+        take: limit,
+      });
 
       res.json(products);
     } catch (error: any) {
@@ -36,6 +56,40 @@ const productCtrl = {
       if (!product) return res.json({ msg: "Product not found" });
 
       res.json(product);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  searchProducts: async (req: Request, res: Response) => {
+    const { name } = req.body;
+    try {
+      const products = await productRepository.find({
+        where: {
+          name: Like(`%${name}%`),
+        },
+        order: {
+          quantity_sold: "DESC",
+        },
+        take: 10,
+        cache: true,
+      });
+
+      res.json(products);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  sortProducts: async (req: Request, res: Response) => {
+    const { skip, limit } = PageConfig(req);
+    try {
+      const products = await productRepository.find({
+        skip,
+        take: limit,
+      });
+
+      res.json(products);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
